@@ -5,7 +5,17 @@
 const int BTN_PIN = 26;
 const int BTN_PIN_2 = 7;
 
-int main() {
+void debouncing(int botton_pin, int botton_number, int *counter)
+{
+    while (!gpio_get(botton_pin))
+    {
+        printf("Botao %d: %d\n", botton_number, (*counter)++);
+        sleep_ms(300);
+    };
+}
+
+int main()
+{
     stdio_init_all();
 
     gpio_init(BTN_PIN);
@@ -15,24 +25,13 @@ int main() {
     gpio_init(BTN_PIN_2);
     gpio_set_dir(BTN_PIN_2, GPIO_IN);
     gpio_pull_up(BTN_PIN_2);
-    
-    int cnt_1 = 1;
-    int cnt_2 = 1;
 
-    while (true) {
+    int cnt_1 = 0;
+    int cnt_2 = 0;
 
-        if (!gpio_get(BTN_PIN)) {
-            while (!gpio_get(BTN_PIN)) {
-                printf("Botao 1: %d\n", cnt_1++);
-                sleep_ms(300);
-            };
-        }
-
-        if (!gpio_get(BTN_PIN_2)) {
-            while (!gpio_get(BTN_PIN_2)) {
-                printf("Botao 2: %d\n", cnt_2++);
-                sleep_ms(300);
-            };
-        }
+    while (true)
+    {
+        debouncing(BTN_PIN, 1, &cnt_1);
+        debouncing(BTN_PIN_2, 2, &cnt_2);
     }
 }
